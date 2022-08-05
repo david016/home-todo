@@ -1,4 +1,5 @@
-import { TodoService } from './../todo.service';
+import { BackendService } from './../services/backend.service';
+import { TodoService } from '../services/todo.service';
 import { Component, OnInit } from '@angular/core';
 import { combineLatest, map, Observable } from 'rxjs';
 import { TodoInterface } from 'types/todo.interface';
@@ -14,16 +15,22 @@ export class TodoListComponent implements OnInit {
   noTodoClass$: Observable<boolean>;
   isAllTodosSelected$: Observable<boolean>;
   editingId: string | null = null;
+  backendTodos: Observable<TodoInterface[]>;
 
-  constructor(private todoService: TodoService) {
-    this.isAllTodosSelected$ = this.todoService.todos$.pipe(
+  constructor(
+    private todoService: TodoService,
+    private backendService: BackendService
+  ) {
+    this.backendTodos = this.backendService.getTodos();
+
+    this.isAllTodosSelected$ = this.backendTodos.pipe(
       map((todos) => todos.every((todo) => todo.isCompleted))
     );
-    this.noTodoClass$ = this.todoService.todos$.pipe(
+    this.noTodoClass$ = this.backendTodos.pipe(
       map((todos) => todos.length === 0)
     );
     this.visibleTodos$ = combineLatest([
-      this.todoService.todos$,
+      this.backendTodos,
       this.todoService.filter$,
     ]).pipe(
       map(([todos, filter]: [TodoInterface[], FilterEnum]) => {
@@ -36,6 +43,30 @@ export class TodoListComponent implements OnInit {
       })
     );
   }
+  // constructor(
+  //   private todoService: TodoService,
+  //   private backendService: BackendService
+  // ) {
+  //   this.isAllTodosSelected$ = this.todoService.todos$.pipe(
+  //     map((todos) => todos.every((todo) => todo.isCompleted))
+  //   );
+  //   this.noTodoClass$ = this.todoService.todos$.pipe(
+  //     map((todos) => todos.length === 0)
+  //   );
+  //   this.visibleTodos$ = combineLatest([
+  //     this.todoService.todos$,
+  //     this.todoService.filter$,
+  //   ]).pipe(
+  //     map(([todos, filter]: [TodoInterface[], FilterEnum]) => {
+  //       if (filter === FilterEnum.active) {
+  //         return todos.filter((todo) => !todo.isCompleted);
+  //       } else if (filter === FilterEnum.completed) {
+  //         return todos.filter((todo) => todo.isCompleted);
+  //       }
+  //       return todos;
+  //     })
+  //   );
+  // }
 
   ngOnInit(): void {}
 

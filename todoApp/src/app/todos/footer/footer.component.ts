@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { FilterEnum } from 'types/filter.enum';
-import { TodoService } from '../todo.service';
+import { TodoService } from '../services/todo.service';
 
 @Component({
   selector: 'app-footer',

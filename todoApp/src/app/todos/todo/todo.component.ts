@@ -10,7 +10,7 @@ import {
   ViewChild,
 } from '@angular/core';
 import { TodoInterface } from 'types/todo.interface';
-import { TodoService } from '../todo.service';
+import { TodoService } from '../services/todo.service';
 
 @Component({
   selector: 'app-todo',
@@ -43,15 +43,15 @@ export class TodoComponent implements OnInit, OnChanges {
   }
 
   setTodoInEditMode(): void {
-    this.setEditingIdEvent.emit(this.todoProps.id);
+    this.setEditingIdEvent.emit(this.todoProps.id!);
   }
 
   removeTodo(): void {
-    this.todoService.removeTodo(this.todoProps.id);
+    this.todoService.removeTodo(this.todoProps.id!);
   }
 
   toggleTodo(): void {
-    this.todoService.toggleTodo(this.todoProps.id);
+    this.todoService.toggleTodo(this.todoProps.id!);
     console.log('toggletodo');
   }
 
@@ -62,6 +62,6 @@ export class TodoComponent implements OnInit, OnChanges {
 
   changeTodo(): void {
     this.setEditingIdEvent.emit(null);
-    this.todoService.changeTodo(this.todoProps.id, this.editingText);
+    this.todoService.changeTodo(this.todoProps.id!, this.editingText);
   }
 }

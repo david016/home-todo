@@ -1,5 +1,7 @@
-import { TodoService } from '../todo.service';
+import { TodoInterface } from './../../../../types/todo.interface';
+import { TodoService } from '../services/todo.service';
 import { Component, OnInit } from '@angular/core';
+import { BackendService } from '../services/backend.service';
 
 @Component({
   selector: 'app-header',
@@ -8,7 +10,10 @@ import { Component, OnInit } from '@angular/core';
 })
 export class HeaderComponent implements OnInit {
   text: string = '';
-  constructor(private todoService: TodoService) {}
+  constructor(
+    private todoService: TodoService,
+    private backendService: BackendService
+  ) {}
 
   ngOnInit(): void {}
 
@@ -18,6 +23,18 @@ export class HeaderComponent implements OnInit {
   }
 
   addTodo(): void {
+    let todo: TodoInterface = {
+      text: this.text,
+      isCompleted: false,
+    };
+    this.backendService.sendTodo(todo).subscribe({
+      next: () => {
+        console.log('Success');
+      },
+      error: (result) => {
+        console.log('result is:', result);
+      },
+    });
     this.todoService.addTodo(this.text);
     this.text = '';
   }
